@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Extension Popup</title>
+    <style>
+      body {
+        font-family: 'Jua', sans-serif;
+        font-weight: 400;
+        font-style: normal;
+        padding: 10px;
+        width: 350px;
+        background-color: #0f172a;
+      }
+      input,
+      textarea,
+      button {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      header {
+        display: flex;
+        height: 60px;
+        border: #a0dc3d 1px solid;
+        padding: 10px;
+        justify-content: space-between;
+      }
+      section {
+        border: #a0dc3d 1px solid;
+        margin-top: 10px;
+      }
+      #rank,
+      #points,
+      #remaining,
+      #dailyAllowance {
+        color: #a0dc3d;
+        font-size: 25px;
+      }
+      #tip_alowance_container {
+        width: 120px;
+        height: 65px;
+        margin: 10px 5px;
+        padding: 5px 10px;
+        border: #a0dc3d 1px solid;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-around;
+      }
+      #tip_alowance_container > p {
+        margin: 0;
+      }
+      #logoutForm {
+        width: 90px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 7px;
+      }
+      #logoutForm > p {
+        cursor: pointer;
+        background-color: #a78bfa;
+        text-align: center;
+        height: 40px;
+        width: 40px;
+        border-radius: 10%;
+      }
+      #logoutForm > p > i {
+        width: 100%;
+        height: 100%;
+        font-size: 25px;
+        margin-top: 9px;
+      }
+      #logoutForm > p:hover {
+        background-color: rgb(75, 56, 133);
+      }
+      #logoutForm > p > i:hover {
+        color: #eee;
+      }
+      #avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+      #displayName {
+        margin: 0;
+        color: #38bdf8;
+      }
+      #username {
+        margin: 0;
+        color: #a78bfa;
+        cursor: pointer;
+      }
+      #username:hover {
+        color: #daceff;
+      }
+      #pleaseLogin {
+        color: #eee;
+        cursor: pointer;
+      }
+      #pleaseLogin:hover {
+        color: #cfcfcf;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loginPage" style="display: block">
+      <h1 id="pleaseLogin">Please Supercast Login</h1>
+    </div>
+
+    <div id="mainPage" style="display: none">
+      <header>
+        <div style="display: flex">
+          <img id="avatar" src="./icon/HI.png" alt="User Avatar" />
+          <div style="padding-left: 15px">
+            <h2 id="displayName">displayName</h2>
+            <p id="username">@fname</p>
+          </div>
+        </div>
+        <div id="logoutForm">
+          <p id="refresh">
+            <i class="fa-solid fa-arrow-rotate-right"></i>
+          </p>
+          <p id="moveToSidebarButton">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          </p>
+        </div>
+      </header>
+
+      <section id="infoSection">
+        <h2 style="color: #38bdf8; margin-left: 10px">Tip Allowance</h2>
+        <div style="display: flex; flex-direction: row; justify-content: space-around">
+          <div style="display: flex; flex-direction: column">
+            <div id="tip_alowance_container">
+              <p style="color: #ddd">Rank</p>
+              <p id="rank">0</p>
+            </div>
+            <div id="tip_alowance_container">
+              <p style="color: #ddd">Points</p>
+              <p id="points">0</p>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column">
+            <div id="tip_alowance_container">
+              <p style="color: #ddd">Remaining</p>
+              <p id="remaining">0</p>
+            </div>
+            <div id="tip_alowance_container">
+              <p style="color: #ddd">Daily Allowance</p>
+              <p id="dailyAllowance">0</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
