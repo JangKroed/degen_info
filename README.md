@@ -15,9 +15,10 @@ The installation process for DEGEN INFO is as follows:
 
 Using DEGEN INFO is very simple:
 
-1. Run the `npm install` command in the `proxy_server` folder, then start the server locally with `npm start`.
-2. Log in to warpcast or supercast within your browser.
-3. Click the extension icon. </br>
+1. Ensure Node.js version 18 or higher is installed on your system for optimal performance and compatibility.
+2. Run the `npm install` command in the `proxy_server` folder, then start the server locally with `npm start`.
+3. Log in to warpcast or supercast within your browser.
+4. Click the extension icon. </br>
 ![image](https://github.com/JangKroed/degen_info/assets/96761280/80202cf7-9383-42c3-9a49-4e7a2a169103)
 
 ## Features
