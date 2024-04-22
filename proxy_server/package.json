@@ -1,13 +1,23 @@
 {
   "name": "degen_server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Server component for DEGEN INFO Chrome extension that handles authentication and data retrieval for warpcast and supercast platforms.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
-  "keywords": [],
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JangKroed/degen_info/proxy_server"
+  },
+  "keywords": [
+    "degen_info",
+    "authentication",
+    "warpcast",
+    "supercast",
+    "chrome-extension"
+  ],
+  "author": "JangYongHo <didlsdydgh@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
