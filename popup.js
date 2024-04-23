@@ -1,7 +1,20 @@
-document.addEventListener('DOMContentLoaded', function () {
-  chrome.storage.local.get(['userInfo'], function (result) {
+async function responseToJson(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const jsonData = await response.json();
+    return Array.isArray(jsonData) ? jsonData[0] : jsonData;
+  } catch (error) {
+    console.error('Failed to fetch or parse response:', error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  chrome.storage.local.get(['userInfo'], async (result) => {
     if (!result.userInfo) {
-      chrome.tabs.query({}, function (tabs) {
+      chrome.tabs.query({}, (tabs) => {
         let target_id = '';
 
         for (const tab of tabs) {
@@ -26,62 +39,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
     } else {
-      setUserInfo();
+      await getUserInfo();
       document.getElementById('loginPage').style.display = 'none';
       document.getElementById('mainPage').style.display = 'block';
     }
   });
 });
 
-async function responseToJson(url) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const jsonData = await response.json();
-    return Array.isArray(jsonData) ? jsonData[0] : jsonData;
-  } catch (error) {
-    console.error('Failed to fetch or parse response:', error);
-  }
-}
-
-async function getUserinfo(fid) {
-  const { user } = await responseToJson(`https://www.supercast.xyz/api/profile?fid=${fid}`);
-
-  const { username, avatar, connectedAddress: address, displayName } = user;
-
-  const avatarElement = document.getElementById('avatar');
-  const displayNameElement = document.getElementById('displayName');
-  const usernameElement = document.getElementById('username');
-  const rankElement = document.getElementById('rank');
-  const dailyAllowanceElement = document.getElementById('dailyAllowance');
-  const remainingElement = document.getElementById('remaining');
-  const pointsElement = document.getElementById('points');
-
-  avatarElement.src = avatar;
-  displayNameElement.textContent = displayName;
-  usernameElement.textContent = `@${username}`;
-
-  const USE_POINT_URL = `http://localhost:1005/points?address=${address}`;
-  const USE_TIP_URL = `http://localhost:1005/tips?address=${address}`;
-
-  const { points: My_Point } = await responseToJson(USE_POINT_URL);
-  const { user_rank, tip_allowance, remaining_allowance } = await responseToJson(USE_TIP_URL);
-
-  pointsElement.textContent = My_Point;
-  rankElement.textContent = user_rank;
-  dailyAllowanceElement.textContent = tip_allowance;
-  remainingElement.textContent = remaining_allowance;
-
-  const userInfo = { username, avatar, address, displayName, My_Point, user_rank, tip_allowance, remaining_allowance };
-  chrome.storage.local.set({ userInfo });
-}
-
-function setUserInfo() {
-  chrome.storage.local.get(['userInfo'], function (result) {
+async function getUserInfo() {
+  chrome.storage.local.get(['userInfo'], async (result) => {
     if (result.userInfo) {
-      const { username, avatar, displayName, My_Point, user_rank, tip_allowance } = result.userInfo;
+      const { username, avatar, displayName, my_point, user_rank, tip_allowance } = result.userInfo;
 
       const avatarElement = document.getElementById('avatar');
       const displayNameElement = document.getElementById('displayName');
@@ -94,10 +62,10 @@ function setUserInfo() {
       displayNameElement.textContent = displayName;
       usernameElement.textContent = `@${username}`;
 
-      pointsElement.textContent = My_Point;
+      pointsElement.textContent = my_point;
       rankElement.textContent = user_rank;
       dailyAllowanceElement.textContent = tip_allowance;
-      getUseTipResult();
+      await getUseTipResult();
     }
   });
 }
@@ -146,6 +114,16 @@ if (document.getElementById('moveToSidebarButton')) {
   });
 }
 
+if (document.getElementById('logout')) {
+  document.getElementById('logout').addEventListener('click', () => {
+    chrome.storage.local.clear(() => {
+      document.getElementById('loginPage').style.display = 'block';
+      document.getElementById('mainPage').style.display = 'none';
+      console.log('storage clear !');
+    });
+  });
+}
+
 function isWithinRange(targetDateString) {
   const now = new Date();
   const targetDate = new Date(targetDateString);
@@ -180,7 +158,7 @@ function getDegen(text) {
   return match ? parseInt(match[1], 10) : null;
 }
 
-function getUseTipResult() {
+async function getUseTipResult() {
   chrome.storage.local.get(['fid'], async function (result) {
     if (result.fid) {
       const { fid } = result;
@@ -235,23 +213,14 @@ function getUseTipResult() {
 }
 
 if (document.getElementById('refresh')) {
-  document.getElementById('refresh').addEventListener('click', function () {
-    getUseTipResult();
-  });
+  document.getElementById('refresh').addEventListener('click', getUseTipResult);
 }
 
-chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) {
-  if (request.action === 'logout') {
-    chrome.storage.local.clear(function () {
-      console.log('User logged out successfully.');
-    });
-  }
-  if (request.fid) {
-    chrome.storage.local.set({ fid: request.fid }, function () {
-      console.log('chrome storage save the fid.');
-    });
-
-    await getUserinfo(request.fid);
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+  if (request.action === 'LOGIN_SUCCESS') {
+    const { fid, address, userInfo } = request;
+    chrome.storage.local.set({ fid, address, userInfo });
+    await getUserInfo();
     document.getElementById('loginPage').style.display = 'none';
     document.getElementById('mainPage').style.display = 'block';
   }
